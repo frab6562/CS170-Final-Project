@@ -1,17 +1,16 @@
-//Using Files 67 for Small and 39 for Large
+//Using Files 67 for Small dataset and 39 for Large dataset
 #include <iostream>
 #include <vector>
 #include <fstream>
-
 using namespace std;
 
 // This function reads in the desired file and then places all the appropiate data into their respective vectors.
-void readFile(string file, vector<double> &Class, vector<vector<double>> &feature){
+bool readFile(string file, vector<double> &Class, vector<vector<double>> &feature){
     ifstream fin;
     fin.open(file);
     if (!fin.is_open()){
-        cout << "Could not open file: " << file << endl;
-        return;
+        cout << "ERROR: File does no Exist" << file << endl;
+        return false;
     }
     
     int row = 0;
@@ -34,24 +33,30 @@ void readFile(string file, vector<double> &Class, vector<vector<double>> &featur
         }
     }
     fin.close();
+    return true;
 }
+
+
 
 int main() {
     string file;
     int algorithm;
-    //This Matrix will hold all the features
-    vector<vector<double>> features;
-    //This Vector will hold all the Classifications
-    vector<double> classes;
+    vector<vector<double>> features; //This Matrix will hold all the features
+    vector<double> classes;  //This Vector will hold all the Classifications
     
     cout << "Welcone to the best Feature Selection Algoithm!" << endl;
     cout << "Type the name of the file you want to run: " << endl;
     cin >> file;
     
-    readFile(file, classes, features);
+    if(!readFile(file, classes, features))
+        return 0;
     
     cout << "Type the number of the Algoithm you want to run: \n" << "1) Foward Selection\n" << "2) Backward Elimination" << endl;
     cin >> algorithm;
+    
+    cout << "The dataset has " << features[0].size() << " features (not including class attrubites), with " << features.size() << " instances" << endl;
+    cout << "Beginning Search... " << endl;
+    
     
     return 0;
 }
