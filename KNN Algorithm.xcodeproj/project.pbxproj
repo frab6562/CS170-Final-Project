@@ -30,6 +30,9 @@
 		3F23B144293F11D200EF50BC /* 6.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = 6.txt; path = ../../../../Downloads/6.txt; sourceTree = "<group>"; };
 		3F23B145293F129600EF50BC /* 88.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = 88.txt; path = ../../../../Downloads/88.txt; sourceTree = "<group>"; };
 		3F23B146293F159B00EF50BC /* 21.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = 21.txt; path = ../../../../Downloads/21.txt; sourceTree = "<group>"; };
+		3F23B147293F176400EF50BC /* 6Large.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = 6Large.txt; path = ../../../../Downloads/6Large.txt; sourceTree = "<group>"; };
+		3F23B148293F17C000EF50BC /* 96Large.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = 96Large.txt; path = ../../../../Downloads/96Large.txt; sourceTree = "<group>"; };
+		3F23B149293F18DF00EF50BC /* 39Large.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = 39Large.txt; path = ../../../../Downloads/39Large.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,9 +66,12 @@
 			isa = PBXGroup;
 			children = (
 				3F23B144293F11D200EF50BC /* 6.txt */,
+				3F23B147293F176400EF50BC /* 6Large.txt */,
 				3F23B146293F159B00EF50BC /* 21.txt */,
+				3F23B149293F18DF00EF50BC /* 39Large.txt */,
 				3F23B145293F129600EF50BC /* 88.txt */,
 				3F23B143293F0AE700EF50BC /* 96.txt */,
+				3F23B148293F17C000EF50BC /* 96Large.txt */,
 				3F1CF315293C793B00C20B4D /* 67.txt */,
 				3F1CF307293C660F00C20B4D /* main.cpp */,
 			);

@@ -127,7 +127,8 @@ int main() {
     string file;
     char file_length;
     int algorithm;
-    vector<int> intial{0,1,2,3,4,5};
+    vector<int> small{0,1,2,3,4,5};
+    vector<int> large;
     vector<vector<double>> features; //This Matrix will hold all the features
     vector<double> classes;  //This Vector will hold all the Classifications
     
@@ -140,14 +141,23 @@ int main() {
     if(!readFile(file, classes, features,file_length))
         return 0;
     
-    cout << "Type the number of the Algoithm you want to run: \n" << "1) Foward Selection\n" << "2) Backward Elimination" << endl;
+    cout << "Type the number of the Algorithm you want to run: \n" << "1) Foward Selection\n" << "2) Backward Elimination" << endl;
     cin >> algorithm;
     
     cout << "The dataset has " << features[0].size() << " features (not including class attrubites), with " << features.size() << " instances" << endl;
-    cout << "Running nearest neighbor with all " << features[0].size() << " features, using leave-one-out evaluation, I get an accuracy of " << Leave_One_Out_Cross_Validation(classes,features,intial) << "%" << endl;
+    if(file_length == 's'){
+        cout << "Running nearest neighbor with all " << features[0].size() << " features, using leave-one-out evaluation, I get an accuracy of " << Leave_One_Out_Cross_Validation(classes,features,small) << "%" << endl;
+    }
+    else{
+        for(int i = 0; i < 40; ++i)
+            large.push_back(i);
+        cout << "Running nearest neighbor with all " << features[0].size() << " features, using leave-one-out evaluation, I get an accuracy of " << Leave_One_Out_Cross_Validation(classes,features,large) << "%" << endl;
+    }
     cout << "Beginning Search... \n" << endl;
     
-    Feature_Search(classes, features);
-    
+    if(algorithm == 1)
+        Feature_Search(classes, features);
+    else
+     //   Backward_Feature_Search(classes, features);
     return 0;
 }
