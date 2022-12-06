@@ -38,7 +38,6 @@ bool readFile(string file, vector<double> &classes, vector<vector<double>> &feat
 }
 
 int Leave_One_Out_Cross_Validation(/*vector<double> classes, vector<vector<double>> features, */vector<int> current_set){
-    srand (time(NULL));
     return rand() % 100;
 }
 
@@ -47,19 +46,26 @@ void Feature_Search(vector<double> classes, vector<vector<double>> features){
     int best_accuracy = 0;
     int feature_to_add = 0;
     int accuracy = 0;
+    bool is_in_set = false;
     
     for(int i = 0; i < features[0].size(); ++i){
         cout << "On level " << i+1 << " of the search tree." << endl;
         best_accuracy = 0;
         feature_to_add = 0;
         for(int j = 0; j < features[0].size(); ++j){
-            
-            cout << "-- Considering adding feature " << j+1 << endl;
-            accuracy = Leave_One_Out_Cross_Validation(current_set);
-            if(accuracy > best_accuracy){
-                best_accuracy = accuracy;
-                feature_to_add = j+1;
+            for(int k = 0; k < current_set.size(); ++k){ //This extra for loop checks to see if the feature is already in the set.
+                if( j+1 == current_set.at(k))
+                    is_in_set = true;
             }
+            if(!is_in_set){
+                cout << "-- Considering adding feature " << j+1 << endl;
+                accuracy = Leave_One_Out_Cross_Validation(current_set);
+                if(accuracy > best_accuracy){
+                    best_accuracy = accuracy;
+                    feature_to_add = j+1;
+                }
+            }
+            is_in_set = false;
         }
         current_set.push_back(feature_to_add);
         cout << "On level " << i+1 << " I added feature " << feature_to_add << " to current set" << endl;
