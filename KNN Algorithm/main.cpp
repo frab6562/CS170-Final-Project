@@ -1,4 +1,4 @@
-//Using Files 67 for Small dataset and 39 for Large dataset// 96 and 21
+//Using Files 67 for Small dataset and 39 for Large dataset
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -80,6 +80,7 @@ void Feature_Search(vector<double> classes, vector<vector<double>> features){
     double accuracy = 0;
     int feature_to_add = 0;
     bool is_in_set = false;
+    bool only_once = true;
 
     for(int i = 0; i < features[0].size(); ++i){
         best_accuracy = 0;
@@ -92,7 +93,7 @@ void Feature_Search(vector<double> classes, vector<vector<double>> features){
             if(!is_in_set){
                 current_set.push_back(j);
                 accuracy = Leave_One_Out_Cross_Validation(classes,features,current_set);
-                cout << "--- Using feature(s) " << j+1 << " is accuracy " << accuracy << "%" << endl;;
+                cout << "--- Using feature(s) " << j+1 << " is accuracy " << accuracy << "%" << endl;
                 if(accuracy > best_accuracy){
                     best_accuracy = accuracy;
                     feature_to_add = j;
@@ -114,11 +115,79 @@ void Feature_Search(vector<double> classes, vector<vector<double>> features){
                 best_set.push_back(current_set.at(x));
             }
         }
+        else if(only_once){
+            cout << "(Warning Accuracy has decreased! Coninuing search in case of local maxima)\n" << endl;
+            only_once = false;
+        }
     }
     cout << "Finished Search!" << endl;
     cout << "The best feature subset was { ";
     for(int x = 0; x < best_set.size(); ++x){
         cout << best_set.at(x)+1 << " ";
+    }
+    cout << "} which had an accuracy of " << bestest_accuracy << "%\n" << endl;
+}
+
+void Backward_Feature_Search(vector<double> classes, vector<vector<double>> features, vector<int> current_set){
+    vector<int> best_set;
+    vector<int> bestest_set;
+    vector<int> temp;
+    bool only_once = true;
+    double best_accuracy = 0;
+    double bestest_accuracy = 0;
+    double accuracy = 0;
+    double counter = current_set.size();
+    double counter2 = current_set.size()-1;
+    
+    for(int k = 0; k < counter2; ++k){
+        best_accuracy = 0;
+        for(int i = 0; i < counter; ++i){
+            temp.clear();
+            for(int j = 0; j < counter; ++j){
+                if(i != j){
+                    int x = current_set.at(j);
+                    temp.push_back(x);
+                }
+            }
+            accuracy = Leave_One_Out_Cross_Validation(classes,features,temp);
+            cout << "--- Using feature(s) { ";
+            for(int j = 0; j < counter-1; ++j){
+                cout << temp[j]+1 << " ";
+            }
+            cout << "} is accuracy " << accuracy << "%" << endl;
+            if(accuracy > best_accuracy){
+                best_accuracy = accuracy;
+                best_set.clear();
+                for(int j = 0; j < counter-1; ++j)
+                    best_set.push_back(temp.at(j));
+            }
+        }
+        current_set.clear();
+        cout << "Feature set { ";
+        for(int i = 0; i < counter-1; ++i){
+            current_set.push_back(best_set.at(i));
+            cout << best_set.at(i)+1 << " ";
+        }
+        cout << "} was best, accuracy was " << best_accuracy << "%\n" << endl;
+        
+        if(best_accuracy > bestest_accuracy){
+            bestest_accuracy = best_accuracy;
+            bestest_set.clear();
+            for(int x = 0; x < counter-1; ++x){
+                bestest_set.push_back(best_set.at(x));
+            }
+        }
+        else if(only_once){
+            cout << "(Warning Accuracy has decreased! Coninuing search in case of local maxima)\n" << endl;
+            only_once = false;
+        }
+        --counter;
+    }
+    
+    cout << "Finished Search!" << endl;
+    cout << "The best feature subset was { ";
+    for(int x = 0; x < bestest_set.size(); ++x){
+        cout << bestest_set.at(x)+1 << " ";
     }
     cout << "} which had an accuracy of " << bestest_accuracy << "%\n" << endl;
 }
@@ -157,7 +226,9 @@ int main() {
     
     if(algorithm == 1)
         Feature_Search(classes, features);
+    else if(file_length == 's')
+        Backward_Feature_Search(classes, features, small);
     else
-     //   Backward_Feature_Search(classes, features);
+        Backward_Feature_Search(classes, features, large);
     return 0;
 }
