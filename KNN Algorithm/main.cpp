@@ -10,10 +10,12 @@ using namespace std;
 bool readFile(string file, vector<double> &classes, vector<vector<double>> &features, char file_length){
     ifstream fin;
     fin.open(file);
+    
     if (!fin.is_open()){
         cout << "ERROR: File does not Exist: " << file << endl;
         return false;
     }
+    
     int row = 0;
     double data;
     fin >> data;
@@ -25,23 +27,24 @@ bool readFile(string file, vector<double> &classes, vector<vector<double>> &feat
         count_to = 6;
     else
         count_to = 40;
-        
-        while(fin >> data){
-            if(counter < count_to){
-                features[row].push_back(data);
-                ++counter;
-            }
-            else{
-                counter = 0;
-                ++row;
-                classes.push_back(data);
-                features.push_back(vector<double>());
-            }
+    
+    while(fin >> data){
+        if(counter < count_to){
+            features[row].push_back(data);
+            ++counter;
         }
-        fin.close();
-        return true;
+        else{
+            counter = 0;
+            ++row;
+            classes.push_back(data);
+            features.push_back(vector<double>());
+        }
+    }
+    fin.close();
+    return true;
 }
 
+//This function uses KNN algorithm to classify objects. It returns an accuracy using cross fold validation.
 double Leave_One_Out_Cross_Validation(vector<double> classes, vector<vector<double>> features, vector<int> current_set){
     double k = classes.size();
     double distance = 0;
@@ -72,6 +75,7 @@ double Leave_One_Out_Cross_Validation(vector<double> classes, vector<vector<doub
     return (accuracy/k)*100;
 }
 
+//This function searches for the best subset of features starting with one feature and finishing with all features.
 void Feature_Search(vector<double> classes, vector<vector<double>> features){
     vector<int> current_set;
     vector<int> best_set;
@@ -81,7 +85,7 @@ void Feature_Search(vector<double> classes, vector<vector<double>> features){
     int feature_to_add = 0;
     bool is_in_set = false;
     bool only_once = true;
-
+    
     for(int i = 0; i < features[0].size(); ++i){
         best_accuracy = 0;
         feature_to_add = 0;
@@ -110,7 +114,7 @@ void Feature_Search(vector<double> classes, vector<vector<double>> features){
         
         if(best_accuracy > bestest_accuracy){
             bestest_accuracy = best_accuracy;
-                best_set.clear();
+            best_set.clear();
             for(int x = 0; x < current_set.size(); ++x){
                 best_set.push_back(current_set.at(x));
             }
@@ -128,7 +132,8 @@ void Feature_Search(vector<double> classes, vector<vector<double>> features){
     cout << "} which had an accuracy of " << bestest_accuracy << "%\n" << endl;
 }
 
-void Backward_Feature_Search(vector<double> classes, vector<vector<double>> features, vector<int> current_set){
+//This function searches for the best subset of features starting with all the features and removing them one by one until there is only one left.
+void Backward_Feature_Search(vector<double> classes, vector<vector<double>> features, vector<int> &current_set){
     vector<int> best_set;
     vector<int> bestest_set;
     vector<int> temp;
@@ -143,13 +148,13 @@ void Backward_Feature_Search(vector<double> classes, vector<vector<double>> feat
         best_accuracy = 0;
         for(int i = 0; i < counter; ++i){
             temp.clear();
-            for(int j = 0; j < counter; ++j){
+            for(int j = 0; j < counter; ++j){ //This for loop creates a temporary array that holds the subset of the current_set -1 of each feature.
                 if(i != j){
                     int x = current_set.at(j);
                     temp.push_back(x);
                 }
             }
-            accuracy = Leave_One_Out_Cross_Validation(classes,features,temp);
+            accuracy = Leave_One_Out_Cross_Validation(classes,features,temp); //Here we test the accuracy of each subset made previously.
             cout << "--- Using feature(s) { ";
             for(int j = 0; j < counter-1; ++j){
                 cout << temp[j]+1 << " ";
@@ -207,9 +212,11 @@ int main() {
     cout << "Type the name of the file you want to run: " << endl;
     cin >> file;
     
+    //Checks if the file exists and places all the appropriate variables into arrays.
     if(!readFile(file, classes, features,file_length))
         return 0;
     
+    //Ask user for type of algoithm.
     cout << "Type the number of the Algorithm you want to run: \n" << "1) Foward Selection\n" << "2) Backward Elimination" << endl;
     cin >> algorithm;
     
